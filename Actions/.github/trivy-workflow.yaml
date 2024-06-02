@@ -1,0 +1,19 @@
+name: Trivy vulnerabilities scan
+
+on: 
+  push:
+    branches:
+      - main
+jobs: 
+  scan:
+    runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout step
+      uses: actions/checkout@v2
+
+    - name: Set up trivy
+      run: docker pull aquasec/trivy:latest
+
+    - name: Scan vulnerabilities and misconfigurations 
+      run: docker run --rm -v "{{github.workspace}}":/target aquasec/trivy:latest fs --scanners vuln,misconfig /target 
