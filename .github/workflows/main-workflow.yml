@@ -21,11 +21,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/agenda:latest .
-
-      - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/agenda:latest
+      - name: Build and Push docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ../../
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/agenda:latest
 
       - name: Set up Trivy
         run: docker pull aquasec/trivy:latest
