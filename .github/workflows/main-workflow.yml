@@ -1,0 +1,29 @@
+name: Build, Push, and Scan Docker Image
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs: 
+  build-push-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/agenda:latest .
+
+    - name: Push Docker image to Docker Hub
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/agenda:latest
+
+    - name: Set up Trivy
+      run: docker pull aquasec/trivy:latest
+
+    - name: Scan Docker image for vulnerabilities and misconfigurations
+      run: docker run --rm aquasec/trivy:latest image ${{ secrets.DOCKER_USERNAME }}/agenda:latest
