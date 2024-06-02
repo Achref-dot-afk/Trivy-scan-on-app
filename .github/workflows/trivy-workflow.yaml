@@ -17,4 +17,4 @@ jobs:
       run: docker pull aquasec/trivy:latest
 
     - name: Scan vulnerabilities and misconfigurations 
-      run: docker run --rm -v "{{ github.workspace }}":/target aquasec/trivy:latest fs --scanners vuln,misconfig /target
+      run: docker run --rm -v ${{ github.workspace }}:/target aquasec/trivy:latest fs --scanners vuln,misconfig /target
